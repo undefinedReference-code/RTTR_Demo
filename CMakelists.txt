@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.15)
+project(MyApp)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+set(RTTR_INSTALL_DIR "${CMAKE_SOURCE_DIR}/External/rttr/build/install")  
+
+# include header
+include_directories(
+    "${RTTR_INSTALL_DIR}/include"  
+)
+
+# static lib
+link_directories("${RTTR_INSTALL_DIR}/lib") 
+add_executable(main_app main.cpp)
+
+target_link_libraries(main_app  "${RTTR_INSTALL_DIR}/lib/librttr_core.lib")
