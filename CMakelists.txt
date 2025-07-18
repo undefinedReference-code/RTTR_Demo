@@ -16,10 +16,6 @@ set(BUILD_INSTALLER OFF CACHE BOOL "Don't build package installer")
 set(BUILD_PACKAGE OFF CACHE BOOL "Don't build package")
 set(BUILD_PACKAGE_SUFFIX "" CACHE STRING "No package suffix")
 
-# 创建RTTR需要但找不到的文件
-file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/README.md" "# RTTR_Demo\nThis is a placeholder file.")
-file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt" "This is a placeholder license file.")
-
 # 添加RTTR作为子项目
 add_subdirectory(External/rttr)
 
