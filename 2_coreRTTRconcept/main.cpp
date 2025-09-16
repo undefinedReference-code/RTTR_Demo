@@ -18,6 +18,19 @@
         int age_ = 0;
     };
 
+    namespace myns {
+        class Foo
+        {
+        public:
+            Foo() = default;
+            Foo(int v) : value(v) {}
+            int get_value() const { return value; }
+            void set_value(int v) { value = v; }
+        private:
+            int value = 0;
+        };
+    }
+
     RTTR_REGISTRATION
     {
         using namespace rttr;
@@ -27,6 +40,11 @@
             .property("name", &Person::get_name, &Person::set_name)
             .property("age",  &Person::get_age,  &Person::set_age)
             .method("greet",  &Person::greet);
+        
+        registration::class_<myns::Foo>("myns::Foo")
+            .constructor<>()
+            .constructor<int>()
+            .property("value", &myns::Foo::get_value, &myns::Foo::set_value);
     }
 
     int main()
@@ -55,6 +73,18 @@
         rttr::variant age_prop_variant = t.get_property("age");
         rttr::variant age_v_from_variant = age_prop_variant.get_value<rttr::property>().get_value(obj);
         std::cout << "Age Using variant as property = " << age_v_from_variant.get_value<int>() << "\n";
+
+        // class in namespace
+        rttr::type t_Foo = rttr::type::get_by_name("myns::Foo");
+        if (!t_Foo.is_valid())
+        {
+            std::cout << "Type not found!" << std::endl;
+            return 0;
+        }
+        std::cout << "Type found: " << t.get_name() << std::endl;
+        rttr::variant obj2 = t.create({ 42 });
+        rttr::property p = t.get_property("value");
+        std::cout << "value = " << p.get_value(obj2).to_int() << std::endl;
 
         return 0;
     }
