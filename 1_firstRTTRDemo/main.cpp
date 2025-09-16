@@ -9,7 +9,15 @@ public:
     }
 };
 
-RTTR_REGISTRATION {
+static void rttr_auto_register_reflection_function_(); namespace {
+    struct rttr__auto__register__ {
+        rttr__auto__register__() {
+            rttr_auto_register_reflection_function_();
+        }
+    };
+} 
+static const rttr__auto__register__ auto_register__12; 
+static void rttr_auto_register_reflection_function_() {
     rttr::registration::class_<MyClass>("MyClass")
         .constructor<>()  
         .method("greet", &MyClass::greet);
