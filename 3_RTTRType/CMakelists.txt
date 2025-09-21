@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.15)
+project(RTTR_Demo)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(BUILD_STATIC ON CACHE BOOL "Build RTTR as static library")
+set(BUILD_DOCUMENTATION OFF CACHE BOOL "Build documentation")
+set(BUILD_EXAMPLES OFF CACHE BOOL "Build examples")
+set(BUILD_UNIT_TESTS OFF CACHE BOOL "Build unit tests")
+set(BUILD_BENCHMARKS OFF CACHE BOOL "Build benchmarks")
+
+set(BUILD_INSTALLER OFF CACHE BOOL "Don't build package installer")
+set(BUILD_PACKAGE OFF CACHE BOOL "Don't build package")
+set(BUILD_PACKAGE_SUFFIX "" CACHE STRING "No package suffix")
+
+add_subdirectory(../External/rttr rttr_lib)
+
+add_executable(main_app main.cpp)
+
+target_link_libraries(main_app PRIVATE rttr_core_lib)
+
+# rttr header
+target_include_directories(main_app PRIVATE 
+    $<TARGET_PROPERTY:rttr_core_lib,INTERFACE_INCLUDE_DIRECTORIES>
+)
+
+# outputDir
+set_target_properties(main_app PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+)
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
