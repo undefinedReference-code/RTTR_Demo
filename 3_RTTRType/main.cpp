@@ -87,10 +87,11 @@ RTTR_REGISTRATION
 }
 
 void printType(rttr::type t) {
+    std::cout << "get name: " << t.get_name() << std::endl;
     std::cout << "get_raw_type: " << t.get_raw_type().get_name() << std::endl
         << "get_wrapped_type: " << t.get_wrapped_type().get_name() << std::endl;
     // get_raw_array_type is private, you should modify it to public if you want to run the follow for test;
-    std::cout << "get_raw_array_type: " << t.get_raw_array_type().get_name() << std::endl;
+    std::cout << "get_raw_array_type: " << t.get_raw_array_type().get_name() << std::endl << std::endl;
 
 }
 
@@ -117,9 +118,18 @@ int main()
 
     std::cout << "======= demo get_raw_type, get_wrapped_typ, get_raw_array_type ========" << std::endl;
 
+    const int _int_val = 0;
+    rttr::type _int_val_instance_type = rttr::type::get(_int_val);
+    printType(_int_val_instance_type);
+
     const int _const_int_val = 0;
     rttr::type const_int_val_instance_type = rttr::type::get(_const_int_val);
     printType(const_int_val_instance_type);
+
+    const int* _const_int_pointer = 0;
+
+    rttr::type _const_int_pointer_instance_type = rttr::type::get(_const_int_pointer);
+    printType(_const_int_pointer_instance_type);
 
     int _int_array_val[100];
     rttr::type _int_array_type = rttr::type::get(_int_array_val);
