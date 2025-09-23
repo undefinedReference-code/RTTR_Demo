@@ -1104,6 +1104,15 @@ class RTTR_API type
         template<typename T>
         static void register_less_than_comparator();
 
+        /*!
+         * \brief Returns the raw type of an array
+         *        E.g.  for type `int[100]` it will return the type object of `int`;
+         *              `const int[10][25]` will return also `int`; etc...
+         *
+         * \return The raw array type.
+         */
+        RTTR_INLINE type get_raw_array_type() const RTTR_NOEXCEPT;
+
     private:
 
         /*!
@@ -1169,15 +1178,6 @@ class RTTR_API type
          * \return The pointer dimension.
          */
         RTTR_INLINE std::size_t get_pointer_dimension() const RTTR_NOEXCEPT;
-
-        /*!
-         * \brief Returns the raw type of an array
-         *        E.g.  for type `int[100]` it will return the type object of `int`;
-         *              `const int[10][25]` will return also `int`; etc...
-         *
-         * \return The raw array type.
-         */
-        RTTR_INLINE type get_raw_array_type() const RTTR_NOEXCEPT;
 
         /*!
          * \brief Returns the compiler depended name of the type.

@@ -4,6 +4,39 @@
 #include <string>
 #include <vector>
 
+template<typename T>
+class MyTemplateClass
+{
+public:
+    void setValue(const T& value) { m_value = value; }
+    MyTemplateClass(const T& value) : m_value(value) {}
+    MyTemplateClass() : m_value(0) {}
+
+    T getValue() const { return m_value; }
+private:
+    T m_value;
+};
+
+namespace rttr
+{
+    template<typename T>
+    struct wrapper_mapper<MyTemplateClass<T>>
+    {
+        using wrapped_type = T;
+        using type = MyTemplateClass<T>;
+
+        static RTTR_INLINE wrapped_type get(const type& obj)
+        {
+            return obj.getValue();
+        }
+
+        static RTTR_INLINE type create(const wrapped_type& value)
+        {
+            return type(value);
+        }
+    };
+}
+
 class Person
 {
 public:
@@ -46,6 +79,19 @@ RTTR_REGISTRATION
         .constructor<>()
         .constructor<int>()
         .property("value", &myns::Foo::get_value, &myns::Foo::set_value);
+
+    registration::class_<MyTemplateClass<int>>("MyTemplateClass<int>")
+        .constructor<>()
+        .method("setValue", &MyTemplateClass<int>::setValue)
+        .method("getValue", &MyTemplateClass<int>::getValue);
+}
+
+void printType(rttr::type t) {
+    std::cout << "get_raw_type: " << t.get_raw_type().get_name() << std::endl
+        << "get_wrapped_type: " << t.get_wrapped_type().get_name() << std::endl;
+    // get_raw_array_type is private, you should modify it to public if you want to run the follow for test;
+    std::cout << "get_raw_array_type: " << t.get_raw_array_type().get_name() << std::endl;
+
 }
 
 int main()
@@ -73,15 +119,17 @@ int main()
 
     const int _const_int_val = 0;
     rttr::type const_int_val_instance_type = rttr::type::get(_const_int_val);
-    std::cout << "get_raw_type: " << const_int_val_instance_type.get_raw_type().get_name() << std::endl
-        << "get_wrapped_type: " << const_int_val_instance_type.get_wrapped_type().get_name() << std::endl;
-    // get_raw_array_type is private, you should modify it to public if you want to run the follow for test;
-    //std::cout << "get_raw_array_type: " << const_int_val_instance_type.get_raw_array_type().get_name() << std::endl;
+    printType(const_int_val_instance_type);
 
     int _int_array_val[100];
     rttr::type _int_array_type = rttr::type::get(_int_array_val);
-    std::cout << "get_raw_type: " << _int_array_type.get_raw_type().get_name() << std::endl
-        << "get_wrapped_type: " << _int_array_type.get_wrapped_type().get_name() << std::endl;
-    // get_raw_array_type is private, you should modify it to public if you want to run the follow for test;
-    // std::cout << "get_raw_array_type: " << _int_array_type.get_raw_array_type().get_name() << std::endl;
+    printType(_int_array_type);
+
+    std::shared_ptr<int> si;
+    rttr::type _si_type = rttr::type::get(si);
+    printType(_si_type);
+
+    MyTemplateClass<int> _int_template;
+    rttr::type _int_template_type = rttr::type::get(_int_template);
+    printType(_int_template_type);
 }
